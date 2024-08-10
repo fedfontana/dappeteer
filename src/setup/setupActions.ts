@@ -65,10 +65,7 @@ export async function declineAnalytics(
 
 export async function importAccount(
   metaMaskPage: DappeteerPage,
-  {
-    seed = "already turtle birth enroll since owner keep patch skirt drift any dinner",
-    password = "password1234",
-  }: MetaMaskOptions
+  { seed, password = "password1234" }: MetaMaskOptions
 ): Promise<void> {
   await waitForOverlay(metaMaskPage);
   await clickOnElement(metaMaskPage, "onboarding-terms-checkbox");

@@ -1,6 +1,6 @@
 {
-  "name": "@chainsafe/dappeteer",
-  "version": "5.2.1",
+  "name": "@fedfontana/dappeteer",
+  "version": "0.0.1",
   "description": "E2E testing for dApps using Puppeteer + MetaMask",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -13,7 +13,6 @@
   "engines": {
     "node": ">=16.10"
   },
-  "packageManager": "yarn@3.7.0",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc -p tsconfig.build.json",
@@ -21,13 +20,8 @@
     "lint:fix": "yarn run lint --fix",
     "test:userData": "USER_DATA_TEST=true mocha --bail --require ts-node/register",
     "test:puppeteer:userData": "AUTOMATION=puppeteer yarn run test:userData",
-    "test:playwright:userData": "AUTOMATION=playwright yarn run test:userData",
     "test:mm": "mocha --timeout 30000 --bail --require ts-node/register --require test/global.ts",
-    "test:flask": "mocha --timeout 30000 --bail --require ts-node/register --require test/global_flask.ts",
     "test:puppeteer:mm": "AUTOMATION=puppeteer yarn run test:mm",
-    "test:puppeteer:flask": "AUTOMATION=puppeteer yarn run test:flask",
-    "test:playwright:mm": "AUTOMATION=playwright yarn run test:mm",
-    "test:playwright:flask": "AUTOMATION=playwright yarn run test:flask",
     "download:metamask": "node -r ts-node/register ./scripts/download_metamask.ts"
   },
   "bin": {
@@ -35,7 +29,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/chainsafe/dappeteer.git"
+    "url": "https://github.com/fedfontana/dappeteer.git"
   },
   "keywords": [
     "e2e",
@@ -47,7 +41,8 @@
   ],
   "contributors": [
     "Juan Cazala <juan@decentraland.org>",
-    "ChainSafe <info@chainsafe.io>"
+    "ChainSafe <info@chainsafe.io>",
+    "Federico Fontana"
   ],
   "license": "MIT",
   "dependencies": {
@@ -61,14 +56,12 @@
     "@chainsafe/eslint-config": "^1.1.0",
     "@ganache/console.log": "^0.2.0",
     "@jest/types": "^27.1.1",
-    "@metamask/snaps-cli": "^0.30.0",
-    "@metamask/snaps-types": "^0.32.2",
-    "@metamask/snaps-ui": "^0.30.0",
     "@rushstack/eslint-patch": "^1.2.0",
     "@types/chai": "^4.2.22",
     "@types/chai-as-promised": "^7.1.5",
     "@types/fs-extra": "^9.0.13",
     "@types/mocha": "^9.1.1",
+    "@types/node": "^22.2.0",
     "@types/serve-handler": "^6.1.1",
     "chai": "^4.3.4",
     "chai-as-promised": "^7.1.1",
@@ -76,7 +69,6 @@
     "ganache": "^7.4.3",
     "jest-environment-node": "^27.1.1",
     "mocha": "^10.2.0",
-    "playwright": "^1.29.2",
     "prettier": "^2.2.1",
     "puppeteer": "19.6.3",
     "solc": "0.5.2",
@@ -86,7 +78,6 @@
     "web3-eth-contract": "4.0.1-alpha.2"
   },
   "peerDependencies": {
-    "playwright": ">=1.29",
     "puppeteer": ">=19"
   },
   "peerDependenciesMeta": {

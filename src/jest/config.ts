@@ -15,11 +15,9 @@ export async function getDappeteerConfig(): Promise<DapeteerJestConfig> {
   const configPath = "dappeteer.config.js";
   const filePath = path.resolve(cwd(), configPath);
 
-  if (!existsSync(filePath))
-    return {
-      dappeteer: DAPPETEER_DEFAULT_CONFIG,
-      metaMask: {},
-    };
+  if (!existsSync(filePath)) {
+    throw new Error(`Config file not found: ${configPath}`);
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
   const config: Partial<DapeteerJestConfig> = await require(filePath);

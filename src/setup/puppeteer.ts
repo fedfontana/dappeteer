@@ -1,26 +1,22 @@
+import { PuppeteerNode } from "puppeteer";
 import { DappeteerBrowser } from "../browser";
-import { DappeteerLaunchOptions } from "../types";
+import { PuppeteerLaunchOptions } from "../types";
+import { DPuppeteerBrowser } from "../puppeteer";
 
 export async function launchPuppeteer(
+  puppeteer: PuppeteerNode,
+  puppeteerOptions: PuppeteerLaunchOptions = {},
   metamaskPath: string,
-  userDataDir: string,
-  options: DappeteerLaunchOptions
+  userDataDir: string
 ): Promise<DappeteerBrowser> {
-  const pBrowser = await (
-    await import("puppeteer")
-  ).default.launch({
-    ...(options.puppeteerOptions ?? {}),
-    headless: options.headless,
+  const pBrowser = await puppeteer.launch({
+    ...(puppeteerOptions ?? {}),
     userDataDir,
     args: [
-      "--accept-lang=en",
-      "--window-size=1920,1080",
       `--disable-extensions-except=${metamaskPath}`,
       `--load-extension=${metamaskPath}`,
-      ...(options.puppeteerOptions?.args || []),
-      ...(options.headless ? ["--headless=new"] : []),
+      ...(puppeteerOptions?.args || []),
     ],
   });
-  const { DPuppeteerBrowser } = await import("../puppeteer");
-  return new DPuppeteerBrowser(pBrowser, userDataDir, options.metaMaskFlask);
+  return new DPuppeteerBrowser(pBrowser, userDataDir, false);
 }

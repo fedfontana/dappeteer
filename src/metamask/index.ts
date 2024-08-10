@@ -1,9 +1,6 @@
 import { Dappeteer } from "..";
 import { DappeteerBrowser } from "../browser";
 import { DappeteerPage } from "../page";
-import { getAllNotifications, installSnap, invokeSnap } from "../snap";
-import { getNotificationEmitter } from "../snap/getNotificationEmitter";
-import { createDialogMethods } from "../snap/dialog";
 import { acceptAddNetwork, rejectAddNetwork } from "./addNetwork";
 import { approve } from "./approve";
 import { confirmTransaction } from "./confirmTransaction";
@@ -58,13 +55,6 @@ export const getMetaMask = (page: DappeteerPage): Promise<Dappeteer> => {
         getTokenBalance: getTokenBalance(page),
         deleteAccount: deleteAccount(page),
         deleteNetwork: deleteNetwork(page),
-      },
-      snaps: {
-        invokeSnap,
-        getNotificationEmitter: getNotificationEmitter(page),
-        getAllNotifications: getAllNotifications(page),
-        installSnap: installSnap(page),
-        dialog: createDialogMethods(page),
       },
       page,
     });

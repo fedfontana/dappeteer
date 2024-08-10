@@ -5,7 +5,6 @@ import { Dappeteer, MetaMaskOptions } from "../types";
 
 import { retry, waitForOverlay } from "../helpers";
 import {
-  acceptTheRisks,
   closeWhatsNewModal,
   enableEthSign,
   importAccount,
@@ -27,33 +26,17 @@ const defaultMetaMaskSteps: Step<MetaMaskOptions>[] = [
   enableEthSign,
 ];
 
-const flaskMetaMaskSteps: Step<MetaMaskOptions>[] = [
-  acceptTheRisks,
-  importAccount,
-  closeWhatsNewModal,
-  showTestNets,
-  enableEthSign,
-];
-
 const MM_HOME_REGEX = "chrome-extension://[a-z]+/home.html";
 
-function getDefaultSteps(browser: DappeteerBrowser): Step<MetaMaskOptions>[] {
-  if (browser.isMetaMaskFlask()) {
-    return flaskMetaMaskSteps;
-  }
-
-  return defaultMetaMaskSteps;
-}
-
-export async function setupMetaMask<Options = MetaMaskOptions>(
+export async function setupMetaMask(
   browser: DappeteerBrowser,
-  options?: Options,
-  steps?: Step<Options>[]
+  options?: MetaMaskOptions,
+  steps?: Step<MetaMaskOptions>[]
 ): Promise<Dappeteer> {
   const page = await getMetaMaskPage(browser);
-  steps = steps ?? getDefaultSteps(browser);
+  steps = steps ?? defaultMetaMaskSteps;
 
-  await page.setViewport({ width: 1920, height: 1080 });
+  // await page.setViewport({ width: 1920, height: 1080 });
   // goes through the installation steps required by MetaMask
   for (const step of steps) {
     await step(page, options);
@@ -74,7 +57,6 @@ export async function setupBootstrappedMetaMask(
   });
   await page.waitForTimeout(100);
   await waitForOverlay(page);
-  if (browser.isMetaMaskFlask()) await waitForOverlay(page);
   await retry(() => metaMask.unlock(password), 3);
 
   await waitForOverlay(page);

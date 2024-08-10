@@ -1,3 +1,4 @@
+import puppeteer from "puppeteer";
 import { launch, setupMetaMask } from "../index";
 
 import { getDappeteerConfig } from "./config";
@@ -5,7 +6,7 @@ import { getDappeteerConfig } from "./config";
 export default async function (): Promise<void> {
   const { dappeteer, metaMask } = await getDappeteerConfig();
 
-  const browser = await launch(dappeteer);
+  const browser = await launch(puppeteer, {}, dappeteer);
   try {
     await setupMetaMask(browser, metaMask);
     global.browser = browser;

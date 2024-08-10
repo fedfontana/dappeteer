@@ -12,7 +12,6 @@ export { DappeteerPage } from "./page";
 export { DappeteerElementHandle } from "./element";
 export {
   bootstrap,
-  initSnapEnv,
   launch,
   setupMetaMask,
   setupBootstrappedMetaMask,
