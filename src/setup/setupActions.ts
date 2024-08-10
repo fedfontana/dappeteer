@@ -10,15 +10,18 @@ import {
   waitForOverlay,
   evaluateElementClick,
 } from "../helpers";
-import { DappeteerPage } from "../page";
+import { DappeteerPage } from "../puppeteer/page";
 import { MetaMaskOptions } from "../types";
 
 export async function showTestNets(metaMaskPage: DappeteerPage): Promise<void> {
   await openNetworkDropdown(metaMaskPage);
 
-  const toggleSwitch = await metaMaskPage.waitForSelector(".toggle-button", {
-    visible: true,
-  });
+  const toggleSwitch = await metaMaskPage.page.waitForSelector(
+    ".toggle-button",
+    {
+      visible: true,
+    }
+  );
   await toggleSwitch.click();
 
   await clickOnLogo(metaMaskPage);
@@ -37,7 +40,7 @@ export async function enableEthSign(
     "I only sign what I understand"
   );
   await clickOnButton(metaMaskPage, "Enable");
-  await metaMaskPage.waitForTimeout(333);
+  await new Promise((resolve) => setTimeout(resolve, 1000));
   await clickOnLogo(metaMaskPage);
 }
 
@@ -45,7 +48,7 @@ export async function acceptTheRisks(
   metaMaskPage: DappeteerPage
 ): Promise<void> {
   await waitForOverlay(metaMaskPage);
-  await metaMaskPage.waitForSelector('[data-testid="experimental-area"]', {
+  await metaMaskPage.page.waitForSelector('[data-testid="experimental-area"]', {
     visible: true,
   });
   await clickOnElement(metaMaskPage, "I accept the risks");
@@ -108,6 +111,6 @@ export const closePrivacyWarningModal = async (
   page: DappeteerPage
 ): Promise<void> => {
   await clickOnButton(page, "snap-privacy-warning-scroll");
-  await page.waitForTimeout(1000);
+  await new Promise((resolve) => setTimeout(resolve, 1000));
   await clickOnButton(page, "Accept");
 };

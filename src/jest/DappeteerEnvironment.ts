@@ -3,8 +3,8 @@ import NodeEnvironment from "jest-environment-node";
 import puppeteer from "puppeteer";
 
 import { getMetaMaskWindow } from "../index";
-import { DPuppeteerBrowser } from "../puppeteer";
 import { getTemporaryUserDataDir } from "../setup/utils/getTemporaryUserDataDir";
+import { DappeteerBrowser } from "../puppeteer/browser";
 
 class DappeteerEnvironment extends NodeEnvironment {
   constructor(config: Config.ProjectConfig) {
@@ -28,7 +28,7 @@ class DappeteerEnvironment extends NodeEnvironment {
     });
     this.global.browser = browser;
     this.global.metamask = await getMetaMaskWindow(
-      new DPuppeteerBrowser(browser, userData, false)
+      new DappeteerBrowser(browser, userData)
     );
     this.global.page = await browser.newPage();
   }

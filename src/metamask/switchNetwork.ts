@@ -1,14 +1,14 @@
 import { openNetworkDropdown } from "../helpers";
-import { DappeteerPage } from "../page";
+import { DappeteerPage } from "../puppeteer/page";
 
 // TODO: validate - for now works fine as it is.
 export const switchNetwork =
   (page: DappeteerPage) =>
   async (network: string = "mainnet"): Promise<void> => {
-    await page.bringToFront();
+    await page.page.bringToFront();
     await openNetworkDropdown(page);
 
-    const networkIndex = await page.evaluate((network: string) => {
+    const networkIndex = await page.page.evaluate((network: string) => {
       const elements = document.querySelectorAll(
         ".multichain-network-list-item__network-name"
       );
@@ -25,14 +25,14 @@ export const switchNetwork =
       return 0;
     }, network);
 
-    const networkFullName = await page.evaluate((index: number) => {
+    const networkFullName = await page.page.evaluate((index: number) => {
       const elements = document.querySelectorAll(
         `.multichain-network-list-item__network-name`
       );
       return (elements[index] as HTMLLIElement).innerText;
     }, networkIndex);
     const networkButton = (
-      await page.$$(".multichain-network-list-item__network-name")
+      await page.page.$$(".multichain-network-list-item__network-name")
     )[networkIndex];
     await networkButton.click();
     await page.waitForXPath(`//*[text() = '${networkFullName}']`);

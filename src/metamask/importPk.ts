@@ -5,12 +5,12 @@ import {
   profileDropdownClick,
   typeOnInputField,
 } from "../helpers";
-import { DappeteerPage } from "../page";
+import { DappeteerPage } from "../puppeteer/page";
 
 export const importPk =
   (page: DappeteerPage) =>
   async (privateKey: string): Promise<void> => {
-    await page.bringToFront();
+    await page.page.bringToFront();
     await profileDropdownClick(page);
 
     await clickOnElement(page, "Import account");

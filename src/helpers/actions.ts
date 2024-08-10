@@ -1,5 +1,6 @@
+import { ElementHandle } from "puppeteer";
 import { DappeteerElementHandle } from "../element";
-import { DappeteerPage } from "../page";
+import { DappeteerPage } from "../puppeteer/page";
 import {
   getButton,
   getElementByContent,
@@ -41,9 +42,12 @@ export const openNetworkDropdown = async (
   page: DappeteerPage
 ): Promise<void> => {
   await retry(async () => {
-    const networkSwitcher = await page.waitForSelector(".mm-picker-network", {
-      visible: true,
-    });
+    const networkSwitcher = await page.page.waitForSelector(
+      ".mm-picker-network",
+      {
+        visible: true,
+      }
+    );
     await networkSwitcher.click();
   }, 3);
 };
@@ -64,7 +68,7 @@ export const accountOptionsDropdownClick = async (
   expectToClose = false
 ): Promise<void> => {
   await retry(async () => {
-    const accountOptionsButton = await page.waitForSelector(
+    const accountOptionsButton = await page.page.waitForSelector(
       `[data-testid="account-options-menu-button"]`,
       {
         visible: true,
@@ -72,7 +76,7 @@ export const accountOptionsDropdownClick = async (
       }
     );
     await accountOptionsButton.click();
-    await page.waitForSelector(".menu__container", {
+    await page.page.waitForSelector(".menu__container", {
       hidden: expectToClose,
       timeout: 2000,
     });
@@ -109,15 +113,18 @@ export const clickOnNavigationButton = async (
 ): Promise<void> => {
   const navigationButton = await getButton(metaMaskPage, text);
   await Promise.all([
-    metaMaskPage.waitForNavigation(),
+    metaMaskPage.page.waitForNavigation(),
     navigationButton.click(),
   ]);
 };
 
 export const clickOnLogo = async (page: DappeteerPage): Promise<void> => {
-  const header = await page.waitForSelector(".app-header__logo-container", {
-    visible: true,
-  });
+  const header = await page.page.waitForSelector(
+    ".app-header__logo-container",
+    {
+      visible: true,
+    }
+  );
   await header.click();
 };
 
@@ -126,13 +133,6 @@ export const goToHomePage = async (page: DappeteerPage): Promise<void> => {
 };
 
 /**
- *
- * @param page
- * @param label
- * @param text
- * @param clear
- * @param excludeSpan
- * @param optional
  * @returns true if found and updated, false otherwise
  */
 export const typeOnInputField = async (
@@ -143,7 +143,7 @@ export const typeOnInputField = async (
   excludeSpan = false,
   optional = false
 ): Promise<boolean> => {
-  let input: DappeteerElementHandle;
+  let input: ElementHandle;
   try {
     input = await getInputByLabel(page, label, excludeSpan, 1000);
   } catch (e) {
@@ -160,7 +160,9 @@ export const typeOnInputField = async (
 
 export async function waitForOverlay(page: DappeteerPage): Promise<void> {
   await page.waitForSelectorIsGone(".loading-overlay", { timeout: 10000 });
-  await page.waitForSelectorIsGone(".app-loading-spinner", { timeout: 10000 });
+  await page.waitForSelectorIsGone(".app-loading-spinner", {
+    timeout: 10000,
+  });
 }
 
 /**
@@ -171,14 +173,17 @@ export const clickOnLittleDownArrowIfNeeded = async (
   page: DappeteerPage
 ): Promise<void> => {
   // wait for the signature page and content to be loaded
-  await page.waitForSelector('[data-testid="page-container-footer-next"]', {
-    visible: true,
-  });
+  await page.page.waitForSelector(
+    '[data-testid="page-container-footer-next"]',
+    {
+      visible: true,
+    }
+  );
 
   // MetaMask requires users to read all the data
   // and scroll until the bottom of the message
   // before enabling the "Sign" button
-  const isSignButtonDisabled = await page.$eval(
+  const isSignButtonDisabled = await page.page.$eval(
     '[data-testid="page-container-footer-next"]',
     (button: HTMLButtonElement) => {
       return button.disabled;
@@ -186,7 +191,7 @@ export const clickOnLittleDownArrowIfNeeded = async (
   );
 
   if (isSignButtonDisabled) {
-    const littleArrowDown = await page.waitForSelector(
+    const littleArrowDown = await page.page.waitForSelector(
       ".signature-request-message__scroll-button",
       {
         visible: true,
@@ -203,6 +208,8 @@ export const evaluateElementClick = async (
 ): Promise<void> => {
   /* For some reason popup deletes close button and then create new one (react stuff)
    * hacky solution can be found here => https://github.com/puppeteer/puppeteer/issues/3496 */
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  await page.$eval(selector, (node) => node.click());
+  await page.waitForTimeout(1000);
+  await page.page.$eval(selector, (node) =>
+    (node as unknown as HTMLElement).click()
+  );
 };

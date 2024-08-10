@@ -1,12 +1,12 @@
 import { PuppeteerNode } from "puppeteer";
-import { DappeteerBrowser } from "../browser";
-import { DappeteerPage } from "../page";
 import {
   Dappeteer,
   DappeteerLaunchOptions,
   MetaMaskOptions,
   PuppeteerLaunchOptions,
 } from "../types";
+import { DappeteerBrowser } from "../puppeteer/browser";
+import { DappeteerPage } from "../puppeteer/page";
 import { launch } from "./launch";
 import { setupBootstrappedMetaMask, setupMetaMask } from "./setupMetaMask";
 

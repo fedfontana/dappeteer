@@ -1,5 +1,5 @@
-import { DappeteerElementHandle } from "../element";
-import { DappeteerPage, Serializable } from "../page";
+import { ElementHandle, Page } from "puppeteer";
+import { DappeteerPage } from "../puppeteer/page";
 
 // TODO: change text() with '.';
 export const getElementByContent = (
@@ -7,7 +7,7 @@ export const getElementByContent = (
   text: string,
   type = "*",
   options?: { timeout?: number; visible?: boolean }
-): Promise<DappeteerElementHandle | null> =>
+): Promise<ElementHandle | null> =>
   page.waitForXPath(`//${type}[contains(text(), '${text}')]`, {
     timeout: 20000,
     visible: true,
@@ -23,8 +23,8 @@ export const getElementByTestId = (
     hidden?: boolean;
     timeout?: number;
   } = {}
-): Promise<DappeteerElementHandle | null> =>
-  page.waitForSelector(`[data-testid="${testId}"]`, {
+): Promise<ElementHandle | null> =>
+  page.page.waitForSelector(`[data-testid="${testId}"]`, {
     timeout: 20000,
     visible: true,
     ...options,
@@ -35,7 +35,7 @@ export const getInputByLabel = (
   text: string,
   excludeSpan = false,
   timeout = 1000
-): Promise<DappeteerElementHandle> =>
+): Promise<ElementHandle> =>
   page.waitForXPath(
     [
       `//label[contains(.,'${text}')]/following-sibling::textarea`,
@@ -55,7 +55,7 @@ export const getInputByLabel = (
 export const getSettingsSwitch = (
   page: DappeteerPage,
   text: string
-): Promise<DappeteerElementHandle | null> =>
+): Promise<ElementHandle | null> =>
   page.waitForXPath(
     [
       `//span[contains(.,'${text}')]/parent::div/following-sibling::div/div/div/div`,
@@ -67,23 +67,22 @@ export const getSettingsSwitch = (
 export const getErrorMessage = async (
   page: DappeteerPage
 ): Promise<string | false> => {
-  const options: Parameters<DappeteerPage["waitForSelector"]>[1] = {
+  const options: Parameters<Page["waitForSelector"]>[1] = {
     timeout: 1000,
   };
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const errorElement: DappeteerElementHandle<Serializable> | null =
-    await Promise.race([
-      page.waitForSelector(`span.error`, options),
-      page.waitForSelector(`.typography--color-error-1`, options),
-      page.waitForSelector(`.typography--color-error-default`, options),
-      page.waitForSelector(`.box--color-error-default`, options),
-      page.waitForSelector(`.mm-box--color-error-default`, options),
-    ]).catch(() => null);
+  const errorElement: ElementHandle | null = await Promise.race([
+    page.page.waitForSelector(`span.error`, options),
+    page.page.waitForSelector(`.typography--color-error-1`, options),
+    page.page.waitForSelector(`.typography--color-error-default`, options),
+    page.page.waitForSelector(`.box--color-error-default`, options),
+    page.page.waitForSelector(`.mm-box--color-error-default`, options),
+  ]).catch(() => null);
   if (!errorElement) return false;
-  return page.evaluate(
+  return page.page.evaluate(
     (node) => (node as unknown as HTMLElement).textContent,
-    errorElement.getSource()
+    errorElement
   );
 };
 
@@ -94,7 +93,7 @@ export const getButton = async (
     timeout?: number;
     visible?: boolean;
   }
-): Promise<DappeteerElementHandle> => {
+): Promise<ElementHandle> => {
   return await Promise.race([
     getElementByTestId(page, text, options),
     getElementByContent(page, text, "button", options),

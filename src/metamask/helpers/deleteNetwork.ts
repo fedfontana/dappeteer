@@ -4,12 +4,12 @@ import {
   getElementByContent,
   openNetworkDropdown,
 } from "../../helpers";
-import { DappeteerPage } from "../../page";
+import { DappeteerPage } from "../../puppeteer/page";
 
 export const deleteNetwork =
   (page: DappeteerPage) =>
   async (name: string): Promise<void> => {
-    await page.bringToFront();
+    await page.page.bringToFront();
 
     await openNetworkDropdown(page);
     const network = await getElementByContent(page, name);

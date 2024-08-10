@@ -1,8 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { PuppeteerNode } from "puppeteer";
-import { RECOMMENDED_METAMASK_VERSION } from "..";
-import { DappeteerBrowser } from "../browser";
+import { DappeteerBrowser, RECOMMENDED_METAMASK_VERSION } from "..";
 import { DappeteerLaunchOptions, PuppeteerLaunchOptions } from "../types";
 import { copyUserDataFiles } from "../helpers/utils";
 import { launchPuppeteer } from "./puppeteer";

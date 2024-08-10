@@ -1,8 +1,8 @@
 import { MetaMaskInpageProvider } from "@metamask/providers";
 import type { launch as puppeteerLaunch } from "puppeteer";
-import { DappeteerPage, Serializable } from "./page";
 import { Path } from "./setup/utils/metaMaskDownloader";
 import { DappeteerBrowser, RECOMMENDED_METAMASK_VERSION } from "./index";
+import { DappeteerPage } from "./puppeteer/page";
 
 export type DappeteerLaunchOptions = {
   metaMaskVersion?:

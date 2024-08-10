@@ -1,6 +1,6 @@
 import { clickOnButton, typeOnInputField } from "../helpers";
 
-import { DappeteerPage } from "../page";
+import { DappeteerPage } from "../puppeteer/page";
 import { GetSingedIn, SetSignedIn } from ".";
 
 export const unlock =
@@ -9,7 +9,7 @@ export const unlock =
     if (await getSingedIn()) {
       throw new Error("You can't sign in because you are already signed in");
     }
-    await page.bringToFront();
+    await page.page.bringToFront();
 
     await typeOnInputField(page, "Password", password);
     await clickOnButton(page, "Unlock");

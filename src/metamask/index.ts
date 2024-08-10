@@ -1,6 +1,5 @@
 import { Dappeteer } from "..";
-import { DappeteerBrowser } from "../browser";
-import { DappeteerPage } from "../page";
+import { DappeteerPage } from "../puppeteer/page";
 import { acceptAddNetwork, rejectAddNetwork } from "./addNetwork";
 import { approve } from "./approve";
 import { confirmTransaction } from "./confirmTransaction";
@@ -14,6 +13,7 @@ import { switchNetwork } from "./switchNetwork";
 import { unlock } from "./unlock";
 import { acceptAddToken, rejectAddToken } from "./addToken";
 import { createAccount } from "./createAccount";
+import { DappeteerBrowser } from "../puppeteer/browser";
 
 export type SetSignedIn = (state: boolean) => Promise<void>;
 export type GetSingedIn = () => Promise<boolean>;
@@ -24,7 +24,7 @@ export const getMetaMask = (page: DappeteerPage): Promise<Dappeteer> => {
     const evaluateFn = (s: boolean): void => {
       (window as unknown as { signedIn: boolean }).signedIn = s;
     };
-    await page.evaluate(evaluateFn, state);
+    await page.page.evaluate(evaluateFn, state);
   };
   const getSingedIn = (): Promise<boolean> => {
     const evaluateFn = (): boolean =>
@@ -32,7 +32,7 @@ export const getMetaMask = (page: DappeteerPage): Promise<Dappeteer> => {
       undefined
         ? (window as unknown as { signedIn: boolean }).signedIn
         : true;
-    return page.evaluate(evaluateFn);
+    return page.page.evaluate(evaluateFn);
   };
 
   return new Promise<Dappeteer>((resolve) => {
@@ -72,7 +72,7 @@ export async function getMetaMaskWindow(
       .pages()
       .then((pages) => {
         for (const page of pages) {
-          if (page.url().includes("chrome-extension")) resolve(page);
+          if (page.page.url().includes("chrome-extension")) resolve(page);
         }
         reject("MetaMask extension not found");
       })

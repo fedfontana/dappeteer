@@ -6,22 +6,22 @@ import {
   typeOnInputField,
   waitForOverlay,
 } from "../helpers";
-import { DappeteerPage } from "../page";
+import { DappeteerPage } from "../puppeteer/page";
 
 import { GetSingedIn } from "./index";
 
 export const confirmTransaction =
   (page: DappeteerPage, getSingedIn: GetSingedIn) =>
   async (options?: TransactionOptions): Promise<void> => {
-    await page.bringToFront();
+    await page.page.bringToFront();
     if (!(await getSingedIn())) {
       throw new Error("You haven't signed in yet");
     }
 
     //retry till we get prompt
     await retry(async () => {
-      await page.bringToFront();
-      await page.reload();
+      await page.page.bringToFront();
+      await page.page.reload();
       await waitForOverlay(page);
       await getElementByTestId(page, "edit-gas-fee-button", {
         timeout: 500,
@@ -65,7 +65,7 @@ export const confirmTransaction =
       await clickOnButton(page, "Save");
     }
 
-    await page.waitForSelector(
+    await page.page.waitForSelector(
       '[data-testid="page-container-footer-next"]:not([disabled])'
     );
     await clickOnButton(page, "Confirm");

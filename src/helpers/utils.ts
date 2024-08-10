@@ -18,7 +18,7 @@ export async function retry<R>(
 
 export function getDappateerPath(): string {
   try {
-    return path.dirname(require.resolve("@chainsafe/dappeteer/package.json"));
+    return path.dirname(require.resolve("@fedfontana/dappeteer/package.json"));
   } catch {
     return path.resolve();
   }

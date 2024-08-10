@@ -1,11 +1,11 @@
 import { clickOnButton, retry, waitForOverlay } from "../helpers";
-import { DappeteerPage } from "../page";
+import { DappeteerPage } from "../puppeteer/page";
 
 // TODO: thing about renaming this method?
 export const approve = (page: DappeteerPage) => async (): Promise<void> => {
   await retry(async () => {
-    await page.bringToFront();
-    await page.reload();
+    await page.page.bringToFront();
+    await page.page.reload();
     await waitForOverlay(page);
 
     // TODO: step 1 of connect chose account to connect?

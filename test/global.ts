@@ -1,5 +1,6 @@
 import path from "path";
 
+import puppeteer from "puppeteer";
 import * as dappeteer from "../src";
 
 import {
@@ -21,13 +22,18 @@ export const mochaHooks = {
     });
 
     const { browser, metaMask, metaMaskPage } = await dappeteer.bootstrap({
-      // optional, else it will use a default seed
-      seed: LOCAL_PREFUNDED_MNEMONIC,
-      password: PASSWORD,
-      automation:
-        (process.env.AUTOMATION as "puppeteer" | "playwright") ?? "puppeteer",
-      metaMaskVersion:
-        process.env.METAMASK_VERSION || dappeteer.RECOMMENDED_METAMASK_VERSION,
+      puppeteer,
+      puppeteerLaunchOptions: {},
+      metamaskOptions: {
+        // optional, else it will use a default seed
+        seed: LOCAL_PREFUNDED_MNEMONIC,
+        password: PASSWORD,
+      },
+      dappeteerLaunchOptions: {
+        metaMaskVersion:
+          process.env.METAMASK_VERSION ||
+          dappeteer.RECOMMENDED_METAMASK_VERSION,
+      },
     });
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

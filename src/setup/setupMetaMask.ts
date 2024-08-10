@@ -1,9 +1,9 @@
-import { DappeteerBrowser } from "../browser";
 import { getMetaMask } from "../metamask";
-import { DappeteerPage } from "../page";
 import { Dappeteer, MetaMaskOptions } from "../types";
 
 import { retry, waitForOverlay } from "../helpers";
+import { DappeteerPage } from "../puppeteer/page";
+import { DappeteerBrowser } from "../puppeteer/browser";
 import {
   closeWhatsNewModal,
   enableEthSign,
@@ -30,15 +30,13 @@ const MM_HOME_REGEX = "chrome-extension://[a-z]+/home.html";
 
 export async function setupMetaMask(
   browser: DappeteerBrowser,
-  options?: MetaMaskOptions,
-  steps?: Step<MetaMaskOptions>[]
+  options?: MetaMaskOptions
 ): Promise<Dappeteer> {
   const page = await getMetaMaskPage(browser);
-  steps = steps ?? defaultMetaMaskSteps;
 
   // await page.setViewport({ width: 1920, height: 1080 });
   // goes through the installation steps required by MetaMask
-  for (const step of steps) {
+  for (const step of defaultMetaMaskSteps) {
     await step(page, options);
   }
 
@@ -52,10 +50,10 @@ export async function setupBootstrappedMetaMask(
   const page = await getMetaMaskPage(browser);
   const metaMask = await getMetaMask(page);
 
-  await metaMask.page.evaluate(() => {
+  await metaMask.page.page.evaluate(() => {
     (window as unknown as { signedIn: boolean }).signedIn = false;
   });
-  await page.waitForTimeout(100);
+  await new Promise((resolve) => setTimeout(resolve, 1000));
   await waitForOverlay(page);
   await retry(() => metaMask.unlock(password), 3);
 
@@ -68,19 +66,19 @@ async function getMetaMaskPage(
 ): Promise<DappeteerPage> {
   const pages = await browser.pages();
   for (const page of pages) {
-    if (page.url().match(MM_HOME_REGEX)) {
+    if (page.page.url().match(MM_HOME_REGEX)) {
       return page;
     }
   }
   return new Promise((resolve, reject) => {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    browser.on("targetcreated", async (target: any) => {
+    browser.browser.on("targetcreated", async (target: any) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
       if (target.url().match(MM_HOME_REGEX)) {
         try {
           const pages = await browser.pages();
           for (const page of pages) {
-            if (page.url().match(MM_HOME_REGEX)) {
+            if (page.page.url().match(MM_HOME_REGEX)) {
               resolve(page);
             }
           }

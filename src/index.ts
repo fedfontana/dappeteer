@@ -7,8 +7,8 @@ export {
   TransactionOptions,
   CustomAutomation,
 } from "./types";
-export { DappeteerBrowser } from "./browser";
-export { DappeteerPage } from "./page";
+export { DappeteerBrowser } from "./puppeteer/browser";
+export { DappeteerPage } from "./puppeteer/page";
 export { DappeteerElementHandle } from "./element";
 export {
   bootstrap,

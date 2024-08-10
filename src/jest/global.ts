@@ -1,6 +1,6 @@
 import { Dappeteer, DappeteerLaunchOptions, MetaMaskOptions } from "..";
-import { DappeteerBrowser } from "../browser";
-import { DappeteerPage } from "../page";
+import { DappeteerBrowser } from "../puppeteer/browser";
+import { DappeteerPage } from "../puppeteer/page";
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace

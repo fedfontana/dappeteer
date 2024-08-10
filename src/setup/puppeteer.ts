@@ -1,7 +1,6 @@
 import { PuppeteerNode } from "puppeteer";
-import { DappeteerBrowser } from "../browser";
 import { PuppeteerLaunchOptions } from "../types";
-import { DPuppeteerBrowser } from "../puppeteer";
+import { DappeteerBrowser } from "../puppeteer/browser";
 
 export async function launchPuppeteer(
   puppeteer: PuppeteerNode,
@@ -18,5 +17,5 @@ export async function launchPuppeteer(
       ...(puppeteerOptions?.args || []),
     ],
   });
-  return new DPuppeteerBrowser(pBrowser, userDataDir, false);
+  return new DappeteerBrowser(pBrowser, userDataDir);
 }
